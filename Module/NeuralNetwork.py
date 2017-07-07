@@ -5,6 +5,12 @@
 #(c) 2017 Carter N. Plasek
 #######################################
 
+#Import necessary modules
+import random
+
+#Constant Variables
+const_e = 2.7182818284590452353602874713527
+
 #Activation Function (defaults to the sigmoid function)
 def act(x):
     if (abs(x) < 32):
