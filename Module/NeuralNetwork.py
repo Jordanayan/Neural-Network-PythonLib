@@ -1,3 +1,11 @@
+#######################################
+#Neural Network Main Module
+#NeuralNetwork.py
+#
+#(c) 2017 Carter N. Plasek
+#######################################
+
+#Activation Function (defaults to the sigmoid function)
 def act(x):
     if (abs(x) < 32):
         return 1/(1 +  const_e**-x)
@@ -6,13 +14,18 @@ def act(x):
     else:
         return 0
 
+#The derivitive of the activation function
 def dirAct(x):
     if (abs(x) < 32):
         return const_e**x/((1+const_e**x)**2)
     else:
         return 0
 
+#Main Neural Network class
 class NeuralNetwork:
+	
+	#Initilizer 
+	#Takes ( Array of the number of neurons in each layer , the activation function, the derivitive of the activation function)
     def __init__(self,numLayers,actFunction = act, actDir = dirAct):
         self.layers = []
         self.weights = {}
@@ -21,13 +34,14 @@ class NeuralNetwork:
         self.canCach = False
         self.act = actFunction
         self.dirAct = actDir
-        
+       	
         global act 
         act = self.act
         
         global dirAct
         dirAct = self.dirAct
         
+		#Initilizes the neurons
         layerOn = 0
         for numInCurrentLayer in numLayers:
             self.layers.append([])
