@@ -60,8 +60,6 @@ class NeuralNetwork:
                 
             layerOn += 1
                 
-        print self.layers
-                
         layerOn = 0
         for layer in self.layers:
             if (layerOn != len(self.layers) - 1):
@@ -70,8 +68,6 @@ class NeuralNetwork:
                         self.weights[(n1,n2)] = random.randint(-100,100)/100.0
             
             layerOn += 1
-            
-        print self.weights
         
     def calcNeuron(self,neuronIndex,inputs):
         return self.neurons[neuronIndex].calc(inputs,self.weights,self.layers,self.neurons)
