@@ -47,7 +47,7 @@ class NeuralNetwork:
         global dirAct
         dirAct = self.dirAct
         
-		#Initilizes the neurons
+	#Initilizes the neurons
         layerOn = 0
         for numInCurrentLayer in numLayers:
             self.layers.append([])
@@ -60,6 +60,7 @@ class NeuralNetwork:
                 
             layerOn += 1
                 
+	#Initilizes Weights
         layerOn = 0
         for layer in self.layers:
             if (layerOn != len(self.layers) - 1):
@@ -68,25 +69,32 @@ class NeuralNetwork:
                         self.weights[(n1,n2)] = random.randint(-100,100)/100.0
             
             layerOn += 1
-        
+    
+	#Returns the values of the neuron calculations
     def calcNeuron(self,neuronIndex,inputs):
         return self.neurons[neuronIndex].calc(inputs,self.weights,self.layers,self.neurons)
     
+	#Trains the network based upon an expected output
     def train(self,inputs,expectedOut):
         error = []
 		
+		#Resets the cach of neuron values
         for n in self.neurons:
-            n.canCash = False
-
+            n.canCach = False
+		
+		#Calculates the error values
         outLayerIndex = 0
         for expect in expectedOut:
 			error.append(expect - self.calcNeuron(self.layers[len(self.layers) - 1][outLayerIndex],inputs))
 			outLayerIndex += 1
-            
+        
+		#Actualy manipulates the weights
         numDone = 0
         for key in self.weights.keys():
             totalChange = 0
             i = 0
+			
+			#Averages the changes required
             for outIndex in self.layers[len(self.layers) - 1]:
                 d = self.calcDir(inputs,key,outIndex,error[i])
                 if (d != 0):
@@ -95,6 +103,7 @@ class NeuralNetwork:
                 
             totalChange /= len(self.layers[len(self.layers) - 1])
             
+			#Applies the changes
             self.weights[key] += totalChange/2        #LEARNING CONST
             
             error = []
@@ -103,16 +112,18 @@ class NeuralNetwork:
             for expect in expectedOut:
                 error.append(expect - self.calcNeuron(self.layers[len(self.layers) - 1][outLayerIndex],inputs))
                 outLayerIndex += 1
-            
+    
+	#Calculates the result of the neural network's calculations given weights
     def calc(self,inputs):
         for n in self.neurons:
-            n.canCash = False
+            n.canCach = False
         retArray = []
         for outNeuronIndex in self.layers[len(self.layers) - 1]:
             retArray.append(self.neurons[outNeuronIndex].calc(inputs,self.weights,self.layers,self.neurons))
         
         return retArray
     
+	#Calculates the second part of the derivative of the weights with respect to the error
     def calcDown(self, neuronIndex,outIndex,error):
         if self.canCach:
             try:
@@ -120,7 +131,7 @@ class NeuralNetwork:
             finally:
                 pass
         for n in self.neurons:
-			n.canCash = False
+			n.canCach = False
         if neuronIndex in self.layers[len(self.layers) - 1]:
             if neuronIndex == outIndex:
                 return dirAct(error)
@@ -136,28 +147,35 @@ class NeuralNetwork:
             
             return dirAct(retVal)
     
+	#Calculates the derivative of a given weight with respect to the error
     def calcDir(self,inputs,(weightIndex1,weightIndex2),outIndex,error):
         self.canCach = False
         self.cach = {}
         return self.calcNeuron(weightIndex1,inputs) * self.calcDown(weightIndex2,outIndex,error)
-    
+
+#Individual Neuron class
 class Neuron:
     def __init__(self,layerNumber, index):
         self.layerNumber = layerNumber
         self.index = index
-        self.canCash = False
+        self.canCach = False
         self.prevValue = 0
     
+	#Calculates the value of the neuron
     def calc(self,inputs,weights,layers,neurons):
-        if self.canCash:
-			return self.prevValue        
+		#Checks if it can cach the result
+        if self.canCach:
+			return self.prevValue     
+		#Checks if the neuron is an input
         elif self.layerNumber == 0:
             return inputs[self.index]
         else:
+			#Sums over all of the inputs to the neuron
             total = 0
             for neuronIndex in layers[self.layerNumber - 1]:
                 total += weights[(neuronIndex,self.index)] * neurons[neuronIndex].calc(inputs,weights,layers,neurons)
             
+			#Caches the value
             self.prevValue = act(total)
-            self.canCash = True
+            self.canCach = True
             return act(total)
