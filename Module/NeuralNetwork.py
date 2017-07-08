@@ -26,6 +26,9 @@
 #Import necessary modules
 import random
 
+#Asserts that the NeuralNetwork module has been imported
+_NeuralNetwork_Defined_ = True
+
 #Constant Variables
 const_e = 2.7182818284590452353602874713527
 
