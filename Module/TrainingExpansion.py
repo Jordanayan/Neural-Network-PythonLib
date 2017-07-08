@@ -25,7 +25,11 @@
 
 #Imports the Neural Network Module if neccessary
 import warnings
-if (!_NeuralNetwork_Defined_):
+try:
+if (not _NeuralNetwork_Defined_):
+    warnings.warn("Neural Network Module not defined... importing now")
+    import NeuralNetwork
+catch:
     warnings.warn("Neural Network Module not defined... importing now")
     import NeuralNetwork
   
