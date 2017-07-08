@@ -26,6 +26,9 @@
 #Import necessary modules
 import random
 
+#Asserts that the NeuralNetwork module has been imported
+_NeuralNetwork_Defined_ = True
+
 #Constant Variables
 const_e = 2.7182818284590452353602874713527
 
@@ -49,15 +52,14 @@ def dirAct(x):
 class NeuralNetwork:
 	
 	#Initilizer 
-	#Takes ( Array of the number of neurons in each layer , the activation function, the derivitive of the activation function)
-    def __init__(self,numLayers,actFunction = act, actDir = dirAct):
+	#Takes ( Array of the number of neurons in each layer , and the cost function)
+    def __init__(self,numLayers,costFunction = None):
         self.layers = []
         self.weights = {}
         self.neurons = []
         self.cach = {}
         self.canCach = False
-        self.act = actFunction
-        self.dirAct = actDir
+	self.cost = costFunction
        	
         global act 
         act = self.act
@@ -101,10 +103,22 @@ class NeuralNetwork:
             n.canCach = False
 		
 		#Calculates the error values
-        outLayerIndex = 0
-        for expect in expectedOut:
-			error.append(expect - self.calcNeuron(self.layers[len(self.layers) - 1][outLayerIndex],inputs))
-			outLayerIndex += 1
+		if (self.cost == None):
+			outLayerIndex = 0
+			for expect in expectedOut:
+				error.append(expect - self.calcNeuron(self.layers[len(self.layers) - 1][outLayerIndex],inputs))
+				outLayerIndex += 1
+		else:
+			outputsTemp = []
+			
+			for index in self.layers[len(self.layers) - 1]:
+				outputsTemp.append(self.calcNeuron(indexm,inputs)))
+			
+			try:
+				error = self.cost(outputs)
+			except:
+				print "Error in calculating error.\nGiven cost function errored out."
+				return
         
 		#Actualy manipulates the weights
         numDone = 0
