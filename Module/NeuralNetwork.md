@@ -85,7 +85,6 @@ def train():
 while with Advanced Training it becomes:
 
 ```python
-import random
 import NeuralNetwork
 
 NN = NeuralNetwork.NeuralNetwork([2,3,4,1])
@@ -96,6 +95,64 @@ t.trainingData = data
 
 t.trainPercent(30)
 ```
+
+There is also the ability to change how much the network leaps on each training itteration. This value is refered to as the training constant. In this implementation if this number is high it takes a larger number of steps to get it to converge, however it will be able to converge upon an answer faster.
+
+For example if we wanted the network to take smaller, more precise steps we would increase the value (in order to do this just add another parameter to any training function, it defaults to 2)
+
+```python
+import NeuralNetwork
+
+NN = NeuralNetwork.NeuralNetwork([2,3,4,1])
+data = [[[2,3],[0]],[[5,3],[1]],[[3,3],[0.5]],[[8,9],[0]],[[8,-1],[1]],[[2,-1],[1]],[[-5,-6],[1]]]
+
+t = NeuralNetwork.Trainer(NN)
+t.trainingData = data
+
+t.trainPercent(30,5)
+```
+
+### Changing Activation Function
+
+The activation function is a function that dictates the shape of the graph of the output versus inputs. For example the first to come to mind would be the "linear" (a simple ```y = x``` line) which makes the output a line. However this requires a smaller step to be taken each training itteration (see previous section for details). Another activation function is the sigmoid function, it is a smooth curve between 0 and 1.
+
+Inorder to change the activation function you can call one of two functions. The first (and easiest to use) is the ```changeAct()``` function. This function takes as input the activation function you wish to use and its derivative.
+
+For example to make the activation function linear the following code would be used:
+
+```python
+import NeuralNetwork
+
+def linear(x):
+    return x
+    
+def dir(x):
+    return 1
+
+NeuralNetwork.changeAct(linear,dir)
+```
+
+However there is an easier way to change the activation function to a common one, and that is the ```changeActPreset()```. This function only takes a number as input its usage is as follows:
+
+```python
+import NeuralNetwork
+
+NeuralNetwork.changeActPreset(1)
+```
+
+The previous example sets the activation function to the linear one. The full list of presets are as follows:
+
+0. Sigmoid
+
+![alt text](http://www.sciweavers.org/upload/Tex2Img_1499566317/render.png "sigmoid equation")
+
+1. Linear
+
+![alt text](http://www.sciweavers.org/upload/Tex2Img_1499566420/render.png "linear equation")
+
+2. Hyperbolic Tangent Sigmoid
+
+![alt text](http://www.sciweavers.org/upload/Tex2Img_1499566511/render.png "sigmoid equation")
 
 ## License Agreement:
 
