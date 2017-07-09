@@ -59,7 +59,7 @@ class NeuralNetwork:
         self.neurons = []
         self.cach = {}
         self.canCach = False
-	self.cost = costFunction
+		self.cost = costFunction
        	
         global act 
         act = self.act
@@ -95,7 +95,7 @@ class NeuralNetwork:
         return self.neurons[neuronIndex].calc(inputs,self.weights,self.layers,self.neurons)
     
 	#Trains the network based upon an expected output
-    def train(self,inputs,expectedOut):
+    def train(self,inputs,expectedOut,learningConst = 2):
         error = []
 		
 		#Resets the cach of neuron values
@@ -136,7 +136,7 @@ class NeuralNetwork:
             totalChange /= len(self.layers[len(self.layers) - 1])
             
 			#Applies the changes
-            self.weights[key] += totalChange/2        #LEARNING CONST
+            self.weights[key] += totalChange/learningConst
             
             error = []
     
