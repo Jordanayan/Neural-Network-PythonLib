@@ -26,12 +26,52 @@
 #Import necessary modules
 import random
 
-#Asserts that the NeuralNetwork module has been imported
-_NeuralNetwork_Defined_ = True
-
 #Constant Variables
 const_e = 2.7182818284590452353602874713527
 
+#Sigmoid Function
+def sig(x):
+    if (abs(x) < 32):
+        return 1/(1 +  const_e**-x)
+    elif (x > 0):
+        return 1
+    else:
+        return 0
+
+#The derivitive of the sigmoid function
+def dirSig(x):
+    if (abs(x) < 32):
+        return const_e**x/((1+const_e**x)**2)
+    else:
+        return 0
+	
+#Linear Function
+def lin(x):
+    return x
+
+#The derivitive of the linear function
+def dirLin(x):
+    return 1
+
+#Hyperbolic Tangent Sigmoid Function
+def htan(x):
+    if (abs(x) < 32):
+        return (const_e**x - const_E**-x)/(const_e**x + const_E**-x)
+    elif (x > 0):
+        return 1
+    else:
+        return -1
+
+#The derivitive of the hyperbolic tangent sigmoid function
+def dirHtan(x):
+    if (abs(x) < 32):
+        return 1 - htan(x)**2
+    else:
+        return 0
+	
+#Array of activation functions
+actFuncts = [[sig,dirSig],[lin,dirLin],[htan,dirHtan]]
+	
 #Activation Function (defaults to the sigmoid function)
 def act(x):
     if (abs(x) < 32):
@@ -47,6 +87,15 @@ def dirAct(x):
         return const_e**x/((1+const_e**x)**2)
     else:
         return 0
+
+#Functions to update the activation function and its derivitive
+def changeAct(newAct,newDirAct):
+	act = newAct
+	dirAct = newDirAct
+	
+def changeActPreset(index)
+	act = actFuncts[index][0]
+	dirACt = actFuncts[index][1]
 
 #Main Neural Network class
 class NeuralNetwork:
