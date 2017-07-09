@@ -220,21 +220,21 @@ class Trainer:
         self.hasBias = hasBias
         self.trainingData = []
         
-    def trainAll(self):
+    def trainAll(self,learningConst = 2):
         for d in self.trainingData:
             if (len(d[1]) == self.numOutputs):
                 if (len(d[0]) == self.numInputs):
-                    self.neuralNetwork.train(d[0],d[1])
+                    self.neuralNetwork.train(d[0],d[1],learningConst)
                 else:
                     d.append(1)
                     self.neuralNetwork.train(d[0],d[1])
                     
-    def trainPercent(self,percent):
+    def trainPercent(self,percent,learningConst = 2):
         for i in range((len(self.trainingData) - 1)*percent/100):
             d = random.choice(self.trainingData)
             if (len(d[1]) == self.numOutputs):
                 if (len(d[0]) == self.numInputs):
-                    self.neuralNetwork.train(d[0],d[1])
+                    self.neuralNetwork.train(d[0],d[1],learningConst)
                 else:
                     d.append(1)
-                    self.neuralNetwork.train(d[0],d[1])
+                    self.neuralNetwork.train(d[0],d[1],learningConst)
