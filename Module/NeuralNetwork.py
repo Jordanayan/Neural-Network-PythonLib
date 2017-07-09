@@ -26,12 +26,52 @@
 #Import necessary modules
 import random
 
-#Asserts that the NeuralNetwork module has been imported
-_NeuralNetwork_Defined_ = True
-
 #Constant Variables
 const_e = 2.7182818284590452353602874713527
 
+#Sigmoid Function
+def sig(x):
+    if (abs(x) < 32):
+        return 1/(1 +  const_e**-x)
+    elif (x > 0):
+        return 1
+    else:
+        return 0
+
+#The derivitive of the sigmoid function
+def dirSig(x):
+    if (abs(x) < 32):
+        return const_e**x/((1+const_e**x)**2)
+    else:
+        return 0
+	
+#Linear Function
+def lin(x):
+    return x
+
+#The derivitive of the linear function
+def dirLin(x):
+    return 1
+
+#Hyperbolic Tangent Sigmoid Function
+def htan(x):
+    if (abs(x) < 32):
+        return (const_e**x - const_E**-x)/(const_e**x + const_E**-x)
+    elif (x > 0):
+        return 1
+    else:
+        return -1
+
+#The derivitive of the hyperbolic tangent sigmoid function
+def dirHtan(x):
+    if (abs(x) < 32):
+        return 1 - htan(x)**2
+    else:
+        return 0
+	
+#Array of activation functions
+actFuncts = [[sig,dirSig],[lin,dirLin],[htan,dirHtan]]
+	
 #Activation Function (defaults to the sigmoid function)
 def act(x):
     if (abs(x) < 32):
@@ -48,6 +88,15 @@ def dirAct(x):
     else:
         return 0
 
+#Functions to update the activation function and its derivitive
+def changeAct(newAct,newDirAct):
+	act = newAct
+	dirAct = newDirAct
+	
+def changeActPreset(index)
+	act = actFuncts[index][0]
+	dirACt = actFuncts[index][1]
+
 #Main Neural Network class
 class NeuralNetwork:
 	
@@ -59,7 +108,7 @@ class NeuralNetwork:
         self.neurons = []
         self.cach = {}
         self.canCach = False
-	self.cost = costFunction
+		self.cost = costFunction
        	
         global act 
         act = self.act
@@ -95,7 +144,7 @@ class NeuralNetwork:
         return self.neurons[neuronIndex].calc(inputs,self.weights,self.layers,self.neurons)
     
 	#Trains the network based upon an expected output
-    def train(self,inputs,expectedOut):
+    def train(self,inputs,expectedOut,learningConst = 2):
         error = []
 		
 		#Resets the cach of neuron values
@@ -136,7 +185,7 @@ class NeuralNetwork:
             totalChange /= len(self.layers[len(self.layers) - 1])
             
 			#Applies the changes
-            self.weights[key] += totalChange/2        #LEARNING CONST
+            self.weights[key] += totalChange/learningConst
             
             error = []
     
@@ -211,3 +260,30 @@ class Neuron:
             self.prevValue = act(total)
             self.canCach = True
             return act(total)
+
+class Trainer:
+    def __init__(self,neuralNetworkLink, hasBias = False):
+        self.neuralNetwork = neuralNetworkLink
+        self.numInputs = len(neuralNetworkLink.layers[0])
+        self.numOutputs = len(neuralNetworkLink.layers[len(neuralNetworkLink.layers) - 1])
+        self.hasBias = hasBias
+        self.trainingData = []
+        
+    def trainAll(self,learningConst = 2):
+        for d in self.trainingData:
+            if (len(d[1]) == self.numOutputs):
+                if (len(d[0]) == self.numInputs):
+                    self.neuralNetwork.train(d[0],d[1],learningConst)
+                else:
+                    d.append(1)
+                    self.neuralNetwork.train(d[0],d[1])
+                    
+    def trainPercent(self,percent,learningConst = 2):
+        for i in range((len(self.trainingData) - 1)*percent/100):
+            d = random.choice(self.trainingData)
+            if (len(d[1]) == self.numOutputs):
+                if (len(d[0]) == self.numInputs):
+                    self.neuralNetwork.train(d[0],d[1],learningConst)
+                else:
+                    d.append(1)
+                    self.neuralNetwork.train(d[0],d[1],learningConst)
