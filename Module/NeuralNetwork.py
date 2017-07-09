@@ -211,3 +211,30 @@ class Neuron:
             self.prevValue = act(total)
             self.canCach = True
             return act(total)
+
+class Trainer:
+    def __init__(self,neuralNetworkLink, hasBias = False):
+        self.neuralNetwork = neuralNetworkLink
+        self.numInputs = len(neuralNetworkLink.layers[0])
+        self.numOutputs = len(neuralNetworkLink.layers[len(neuralNetworkLink.layers) - 1])
+        self.hasBias = hasBias
+        self.trainingData = []
+        
+    def trainAll(self):
+        for d in self.trainingData:
+            if (len(d[1]) == self.numOutputs):
+                if (len(d[0]) == self.numInputs):
+                    self.neuralNetwork.train(d[0],d[1])
+                else:
+                    d.append(1)
+                    self.neuralNetwork.train(d[0],d[1])
+                    
+    def trainPercent(self,percent):
+        for i in range((len(self.trainingData) - 1)*percent/100):
+            d = random.choice(self.trainingData)
+            if (len(d[1]) == self.numOutputs):
+                if (len(d[0]) == self.numInputs):
+                    self.neuralNetwork.train(d[0],d[1])
+                else:
+                    d.append(1)
+                    self.neuralNetwork.train(d[0],d[1])
